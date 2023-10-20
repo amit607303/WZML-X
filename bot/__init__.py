@@ -736,8 +736,8 @@ if ospath.exists('shorteners.txt'):
             if len(temp) == 2:
                 shorteners_list.append({'domain': temp[0],'api_key': temp[1]})
 
-if BASE_URL:
-    Popen(f"gunicorn web.wserver:app --bind 0.0.0.0:{BASE_URL_PORT} --worker-class gevent", shell=True)
+PORT = environ.get('PORT')
+Popen(f"gunicorn web.wserver:app --bind 0.0.0.0:{PORT} --worker-class gevent", shell=True)
 
 srun(["qbittorrent-nox", "-d", f"--profile={getcwd()}"])
 if not ospath.exists('.netrc'):
@@ -755,6 +755,7 @@ if ospath.exists('accounts.zip'):
     osremove('accounts.zip')
 if not ospath.exists('accounts'):
     config_dict['USE_SERVICE_ACCOUNTS'] = False
+alive = Popen(["python3", "alive.py"])
 sleep(0.5)
 
 aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
